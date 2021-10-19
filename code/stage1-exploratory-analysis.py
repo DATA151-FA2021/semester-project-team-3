@@ -9,6 +9,18 @@ df = pd.read_csv("../data/student_por_mod.csv")
 
 # FIXME: convert string values in dataset to be numeric - it will allow us to do the comparasions later
 
+df = df.replace(to_replace="no", value=0)
+df = df.replace(to_replace="yes", value=1)
+
+df = df.replace(to_replace="F", value=0)
+df = df.replace(to_replace="M", value=1)
+
+df = df.replace(to_replace="GP", value=0)
+df = df.replace(to_replace="MS", value=1)
+
+df = df.replace(to_replace="A", value=0)
+df = df.replace(to_replace="T", value=1)
+
 print(df)
 
 df.describe(percentiles=[.05, .10, .25, .50, .75, .90, .95])
