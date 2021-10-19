@@ -34,6 +34,7 @@ plt.savefig("correlation_heatmap.png", dpi=200)
 
 for i_column in df.columns:
   for j_column in df.columns.drop([i_column]):
+    
     # Create a 8x8 Figure
     fig = plt.figure(figsize=(8, 8))
     
@@ -41,6 +42,9 @@ for i_column in df.columns:
     bp = sns.boxplot(data=df, x=i_column, y=j_column)
     fig.suptitle(f"{i_column} vs {j_column}")
     plt.savefig(f"{i_column}_vs_{j_column}_boxplot.png")
+    
+    # Recreate the fig - hopefully prevents the two plots from being merged.
+    fig = plt.figure(figsize=(8,8))
     
     # Generate Bi-Variate Histogram
     hp = sns.histplot(data=df, x=i_column, y=j_column)
