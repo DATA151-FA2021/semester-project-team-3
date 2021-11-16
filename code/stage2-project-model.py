@@ -5,6 +5,7 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
 
 df = pd.read_csv("../data/student_por_mod.csv")
 
@@ -42,3 +43,18 @@ print(pd.DataFrame(cm, index=labels, columns=labels))
 for func in [recall_score, precision_score, f1_score]:
    print(f"{func} :  {func(y_val, y_pred > 0.2, average = 'weighted')}")
 
+# Second Model: Random Forest
+  
+r_forest = RandomForestClassifier(n_estimators= 500, random_state=7)
+r_forest.fit(x_train, y_train);
+y_pred = r_forest.predict_proba(X_val)[:,1]
+
+labels = np.unique(y_val)
+cm = confusion_matrix(y_val, y_pred > 0.2, labels = labels)
+print(pd.DataFrame(cm, index=labels, columns=labels))
+
+for func in [accuracy_score, recall_score, precision_score, f1_score]:
+   print(f"{func} : {func(y_val, y_pred > 0.2, average = 'weighted')}")
+
+  
+  
