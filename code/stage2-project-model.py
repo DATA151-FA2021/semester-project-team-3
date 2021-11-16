@@ -75,10 +75,11 @@ print(pd.DataFrame(cm, index=labels, columns=labels))
 for func in [accuracy_score, recall_score, precision_score, f1_score]:
     print(f"{func} : {func(y_val, y_pred > 0.2, average = 'weighted')}")
 
-
 # Code above runs, have not yet refactored the rest of the doc.
 
 """#SMOTE"""
+
+# Third Model: Random Forest with SMOTE undersampling
 
 sm = SMOTE(sampling_strategy="minority", random_state=2)
 x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
@@ -99,8 +100,6 @@ plt.barh(x.columns[0:][sorted_idx], r_forest.feature_importances_[sorted_idx])
 plt.xlabel("Random Forest Feature Importance")
 plt.title("Random Forest Feature Imortance by Group 3")
 plt.savefig("figure3.png", dpi=150, bbox_inches="tight")
-
-# importing roc metrics from sklearn
 
 # Extracting probabilities
 rf_probs = pd.Series(RF.predict_proba(x_val)[:, 1])
