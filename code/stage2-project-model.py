@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_sc
 
 df = pd.read_csv("../data/student_por_mod.csv")
 
-df['failures' = df['failures'].map({0: 'no_fail', 1: 'fail', 2: 'fail', 3: 'fail'})
+df['failures'] = df['failures'].map({0: 'no_fail', 1: 'fail', 2: 'fail', 3: 'fail'})
 
 df['failures'] = np.where(df.failures == 'fail', 1, 0)
 
@@ -23,7 +23,7 @@ print(x.head())
    
 y = df['failures']
 
-x_train, x_val, y_train, y_val = train_test_split(X, y, test_size = 0.2, random_state=123, stratify = y)   
+x_train, x_val, y_train, y_val = train_test_split(x, y, test_size = 0.2, random_state=123, stratify = y)   
 
    
 # First Model: Decision Tree
