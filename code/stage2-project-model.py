@@ -47,7 +47,7 @@ for func in [recall_score, precision_score, f1_score]:
   
 r_forest = RandomForestClassifier(n_estimators= 500, random_state=7)
 r_forest.fit(x_train, y_train);
-y_pred = r_forest.predict_proba(X_val)[:,1]
+y_pred = r_forest.predict_proba(x_val)[:,1]
 
 labels = np.unique(y_val)
 cm = confusion_matrix(y_val, y_pred > 0.2, labels = labels)
