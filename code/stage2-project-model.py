@@ -81,7 +81,7 @@ importances = r_forest.feature_importances_
 # Plotting variable importance
 plt.figure(figsize=(5,10))
 sorted_idx = r_forest.feature_importances_.argsort()
-plt.barh(X.columns[0:][sorted_idx], r_forest.feature_importances_[sorted_idx])
+plt.barh(x.columns[0:][sorted_idx], r_forest.feature_importances_[sorted_idx])
 plt.xlabel("Random Forest Feature Importance")
 plt.title('Random Forest Feature Imortance by Group 3')
 plt.savefig("figure3.png",dpi=150,bbox_inches="tight");
@@ -89,7 +89,7 @@ plt.savefig("figure3.png",dpi=150,bbox_inches="tight");
 # importing roc metrics from sklearn
 
 # Extracting probabilities
-rf_probs = pd.Series(RF.predict_proba(X_val)[:, 1])
+rf_probs = pd.Series(RF.predict_proba(x_val)[:, 1])
 
 # calculate scores
 rf_auc = roc_auc_score(y_val, rf_probs)
@@ -113,7 +113,7 @@ plt.savefig("figure5.png",dpi=150,bbox_inches="tight");
 df= df.drop(['G1','G2','G3','absences','age','Medu','Fedu','traveltime','studytime','famrel','freetime','goout','Walc','Dalc','health'], axis=1)
 
 # Using train_test_split function to split the dataset
-X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = 0.3, random_state=1234, stratify = y)
+x_train, x_val, y_train, y_val = train_test_split(x, y, test_size = 0.3, random_state=1234, stratify = y)
 
 # Chi Square test of Independence
 for col in df.columns[1:]:
@@ -143,10 +143,10 @@ x.head()
 
 # Importing logistic regression
 lr_clf = LogisticRegression()
-lr_clf.fit(X_train, y_train);
+lr_clf.fit(x_train, y_train);
 
 # Prediction using the logistic regression
-y_pred = lr_clf.predict_proba(X_val)[:,1]
+y_pred = lr_clf.predict_proba(x_val)[:,1]
 y_pred[0:10] #first coloumn is prob of negative class (fail)
 
 # Confusion matrix
@@ -165,18 +165,18 @@ print('Precision score is:', precision_score(y_val, y_pred >.2))
 print('F1 score is:', f1_score(y_val, y_pred >.2))
 
 # Cross-validation
-scores = cross_val_score(d_tree, X_train, y_train, cv = 10, scoring = 'recall')
+scores = cross_val_score(d_tree, x_train, y_train, cv = 10, scoring = 'recall')
 print('The cross validation scores are', scores)
 print('The mean score is', scores.mean())
 
 # Cross-validation splitter as a cv parameter
 shuffle_split = StratifiedShuffleSplit(test_size = 0.2, n_splits = 10, random_state=123)
-scores = cross_val_score(d_tree, X_train, y_train, cv = shuffle_split, scoring = 'recall')
+scores = cross_val_score(d_tree, x_train, y_train, cv = shuffle_split, scoring = 'recall')
 print('The cross validation scores are', scores)
 print('The mean score is', scores.mean())
 
 # Extracting probabilities
-lr_probs = pd.Series(lr_clf.predict_proba(X_val)[:, 1])
+lr_probs = pd.Series(lr_clf.predict_proba(x_val)[:, 1])
 
 
 # calculate scores
