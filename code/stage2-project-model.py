@@ -116,9 +116,7 @@ plt.savefig("figure3.png", dpi=150, bbox_inches="tight")
 
 # Third Model: Random Forest with SMOTE undersampling
 
-sm = SMOTE(
-    sampling_strategy="minority",
-)
+sm = SMOTE(sampling_strategy="minority")
 x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
 
 RF = RandomForestClassifier()
@@ -163,20 +161,16 @@ print(df["failures"].value_counts())
 
 """#Model 3: Logistic Regression"""
 
-# Choose Predictors from the dataset
-predictors = df.columns[[7, 8, 15]]
+predictors = df.columns[[7, 8, 15]] # Choose Predictors from the dataset
 
-# Specify the target variable
 target = "failures"
 
-# Target variable
 y = df[target]
 y[0:5]
 
 x = pd.get_dummies(df[predictors], drop_first=True)
 x.head()
 
-# Importing logistic regression
 lr_clf = LogisticRegression()
 runModel(lr_clf, x_train, y_train, x_val, y_val)
 
