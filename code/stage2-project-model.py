@@ -95,11 +95,14 @@ x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
 
 RF = RandomForestClassifier(random_state=2)
 runModel(RF, x_train_res, y_train_res, x_val, y_val)
+rf_fpr, rf_tpr, _ = roc_curve(y_val, pd.Series(RF.predict_proba(x_val)[:, 1]))
+plt.plot(rf_fpr, rf_tpr, color="darkorange", lw=3)
+# axis labels
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.savefig("figure5.png", dpi=150, bbox_inches="tight")
 
 '''
-# calculate roc curves
-rf_fpr, rf_tpr, _ = roc_curve(y_val, rf_probs)
-
 # plot the roc curve for the model
 # plt.plot(rf_fpr, rf_tpr, marker='.', label='Logistic')
 plt.plot(rf_fpr, rf_tpr, color="darkorange", lw=3)
@@ -145,7 +148,7 @@ for col in df.columns[1:]:
 mosaic(data=df, index=["reason", "failures"])
 plt.title("Mosaic Plot of Reason and Failures by Group 3")
 
-df["failures"].value_counts()
+print(df["failures"].value_counts())
 
 """#Model 3: Logistic Regression"""
 
