@@ -96,9 +96,7 @@ runModel(d_tree, x_train, y_train, x_val, y_val)
 
 # Second Model: Random Forest
 
-r_forest = RandomForestClassifier(
-    n_estimators=500,
-)
+r_forest = RandomForestClassifier(n_estimators=500)
 runModel(r_forest, x_train, y_train, x_val, y_val)
 
 # variable importance
@@ -112,8 +110,6 @@ plt.title("Random Forest Feature Imortance by Group 3")
 plt.savefig("figure3.png", dpi=150, bbox_inches="tight")
 
 
-"""#SMOTE"""
-
 # Third Model: Random Forest with SMOTE undersampling
 
 sm = SMOTE(sampling_strategy="minority")
@@ -122,7 +118,7 @@ x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
 RF = RandomForestClassifier()
 runModel(RF, x_train_res, y_train_res, x_val, y_val)
 
-"""#Logistic Regression"""
+# Fourth Model: Logistic Regression
 
 df = df.drop(
     [
@@ -159,9 +155,9 @@ plt.title("Mosaic Plot of Reason and Failures by Group 3")
 
 print(df["failures"].value_counts())
 
-"""#Model 3: Logistic Regression"""
+# Model 5: Logistic Regression
 
-predictors = df.columns[[7, 8, 15]] # Choose Predictors from the dataset
+predictors = df.columns[[7, 8, 15]]  # Choose Predictors from the dataset
 
 target = "failures"
 
