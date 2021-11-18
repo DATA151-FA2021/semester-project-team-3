@@ -67,6 +67,14 @@ def runModel(model, xt, yt, xv, yv):
     # summarize scores
     print(f"ROC AUC : {auc:.3f}")
 
+    # Plotting variable importance
+    plt.figure(figsize=(5, 10))
+    sorted_idx = model.feature_importances_.argsort()
+    plt.barh(x.columns[0:][sorted_idx], model.feature_importances_[sorted_idx])
+    plt.xlabel(f"{model} Feature Importance")
+    plt.title(f"{model} Feature Imortance by Group 3")
+    plt.savefig(f"{model}_feature_importance.png", dpi=150, bbox_inches="tight")
+
     m_fpr, m_tpr, _ = roc_curve(yv, pd.Series(y_pred_prob))
     plt.plot(m_fpr, m_tpr, color="darkorange", lw=3)
     # axis labels
@@ -98,17 +106,6 @@ runModel(d_tree, x_train, y_train, x_val, y_val)
 
 r_forest = RandomForestClassifier(n_estimators=500)
 runModel(r_forest, x_train, y_train, x_val, y_val)
-
-# variable importance
-importances = r_forest.feature_importances_
-# Plotting variable importance
-plt.figure(figsize=(5, 10))
-sorted_idx = r_forest.feature_importances_.argsort()
-plt.barh(x.columns[0:][sorted_idx], r_forest.feature_importances_[sorted_idx])
-plt.xlabel("Random Forest Feature Importance")
-plt.title("Random Forest Feature Imortance by Group 3")
-plt.savefig("figure3.png", dpi=150, bbox_inches="tight")
-
 
 # Third Model: Random Forest with SMOTE undersampling
 
@@ -154,8 +151,6 @@ mosaic(data=df, index=["reason", "failures"])
 plt.title("Mosaic Plot of Reason and Failures by Group 3")
 
 print(df["failures"].value_counts())
-
-# Model 5: Logistic Regression
 
 predictors = df.columns[[7, 8, 15]]  # Choose Predictors from the dataset
 
