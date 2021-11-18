@@ -75,7 +75,16 @@ runModel(d_tree, x_train, y_train, x_val, y_val)
 r_forest = RandomForestClassifier(n_estimators=500, random_state=7)
 runModel(r_forest, x_train, y_train, x_val, y_val)
 
-# Code above runs, have not yet refactored the rest of the doc.
+# variable importance
+importances = r_forest.feature_importances_
+# Plotting variable importance
+plt.figure(figsize=(5, 10))
+sorted_idx = r_forest.feature_importances_.argsort()
+plt.barh(x.columns[0:][sorted_idx], r_forest.feature_importances_[sorted_idx])
+plt.xlabel("Random Forest Feature Importance")
+plt.title("Random Forest Feature Imortance by Group 3")
+plt.savefig("figure3.png", dpi=150, bbox_inches="tight")
+
 
 """#SMOTE"""
 
@@ -86,16 +95,6 @@ x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
 
 RF = RandomForestClassifier(random_state=2)
 runModel(RF, x_train_res, y_train_res, x_val, y_val)
-
-# variable importance
-importances = r_forest.feature_importances_
-# Plotting variable importance
-plt.figure(figsize=(5, 10))
-sorted_idx = r_forest.feature_importances_.argsort()
-plt.barh(x.columns[0:][sorted_idx], r_forest.feature_importances_[sorted_idx])
-plt.xlabel("Random Forest Feature Importance")
-plt.title("Random Forest Feature Imortance by Group 3")
-plt.savefig("figure3.png", dpi=150, bbox_inches="tight")
 
 '''
 # calculate roc curves
