@@ -48,12 +48,21 @@ x_train, x_val, y_train, y_val = train_test_split(
 def runModel(model, xt, yt, xv, yv):
     model.fit(xt, yt)
     y_pred = model.predict(xv)
-    y_pred = model.predict_proba(xv)[:, 1]
+    y_pred_prob = model.predict_proba(xv)[:, 1]
     labels = np.unique(yv)
-    cm = confusion_matrix(yv, y_pred > 0.2, labels=labels)
+    cm = confusion_matrix(yv, y_pred_prob > 0.2, labels=labels)
     print(pd.DataFrame(cm, index=labels, columns=labels))
     for func in [accuracy_score, recall_score, precision_score, f1_score]:
-        print(f"{func.__name__} :  {func(yv, y_pred > 0.2, average = 'weighted')}")
+        print(f"{func.__name__} :  {func(yv, y_pred_prob > 0.2, average = 'weighted')}")
+
+    # print classification report
+    print(metrics.classification_report(yv, y_pred))
+    # Extracting probabilities
+    probs = pd.Series(model.predict_proba(xv)[:, 1])
+    # calculate scores
+    auc = roc_auc_score(yv, probs)
+    # summarize scores
+    print(f"Random Forest: ROC AUC = {auc:.3f}")
 
 
 # First Model: Decision Tree
@@ -76,11 +85,7 @@ sm = SMOTE(sampling_strategy="minority", random_state=2)
 x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
 
 RF = RandomForestClassifier(random_state=2)
-RF.fit(x_train_res, y_train_res)
-predictions = RF.predict(x_val)
-
-# print classification report
-print(metrics.classification_report(y_val, predictions))
+runModel(RF, x_train_res, y_train_res, x_val, y_val)
 
 # variable importance
 importances = r_forest.feature_importances_
@@ -92,15 +97,7 @@ plt.xlabel("Random Forest Feature Importance")
 plt.title("Random Forest Feature Imortance by Group 3")
 plt.savefig("figure3.png", dpi=150, bbox_inches="tight")
 
-# Extracting probabilities
-rf_probs = pd.Series(RF.predict_proba(x_val)[:, 1])
-
-# calculate scores
-rf_auc = roc_auc_score(y_val, rf_probs)
-
-# summarize scores
-print(f"Random Forest: ROC AUC = {rf_auc:.3f}")
-
+'''
 # calculate roc curves
 rf_fpr, rf_tpr, _ = roc_curve(y_val, rf_probs)
 
@@ -111,7 +108,7 @@ plt.plot(rf_fpr, rf_tpr, color="darkorange", lw=3)
 plt.xlabel("False Positive Rate")
 plt.ylabel("True Positive Rate")
 plt.savefig("figure5.png", dpi=150, bbox_inches="tight")
-
+'''
 """#Logistic Regression"""
 
 df = df.drop(
