@@ -72,6 +72,17 @@ def runModel(model, xt, yt, xv, yv):
     plt.ylabel("True Positive Rate")
     plt.savefig(f"{model}.png", dpi=150, bbox_inches="tight")
 
+    # Cross-validation
+    scores = cross_val_score(model, xt, yt, cv=10, scoring="recall")
+    print("The cross validation scores are", scores)
+    print("The mean score is", scores.mean())
+
+    # Cross-validation splitter as a cv parameter
+    shuffle_split = StratifiedShuffleSplit(test_size=0.2, n_splits=10, random_state=123)
+    scores = cross_val_score(model, xt, yt, cv=shuffle_split, scoring="recall")
+    print("The cross validation scores are", scores)
+    print("The mean score is", scores.mean())
+
 
 # First Model: Decision Tree
 
@@ -163,8 +174,6 @@ lr_clf = LogisticRegression()
 runModel(lr_clf, x_train, y_train, x_val, y_val)
 
 '''
-lr_clf.fit(x_train, y_train)
-
 # Prediction using the logistic regression
 y_pred = lr_clf.predict_proba(x_val)[:, 1]
 y_pred[0:10]  # first coloumn is prob of negative class (fail)
@@ -172,13 +181,3 @@ y_pred[0:10]  # first coloumn is prob of negative class (fail)
 y.value_counts()
 y_train.value_counts()
 '''
-# Cross-validation
-scores = cross_val_score(d_tree, x_train, y_train, cv=10, scoring="recall")
-print("The cross validation scores are", scores)
-print("The mean score is", scores.mean())
-
-# Cross-validation splitter as a cv parameter
-shuffle_split = StratifiedShuffleSplit(test_size=0.2, n_splits=10, random_state=123)
-scores = cross_val_score(d_tree, x_train, y_train, cv=shuffle_split, scoring="recall")
-print("The cross validation scores are", scores)
-print("The mean score is", scores.mean())
