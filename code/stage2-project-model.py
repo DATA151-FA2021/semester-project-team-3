@@ -167,29 +167,18 @@ x.head()
 
 # Importing logistic regression
 lr_clf = LogisticRegression()
+runModel(lr_clf, x_train, y_train, x_val, y_val)
+
+'''
 lr_clf.fit(x_train, y_train)
 
 # Prediction using the logistic regression
 y_pred = lr_clf.predict_proba(x_val)[:, 1]
 y_pred[0:10]  # first coloumn is prob of negative class (fail)
 
-# Confusion matrix
-labels = np.unique(y_val)
-cm = confusion_matrix(y_val, y_pred > 0.2, labels=labels)
-pd.DataFrame(
-    cm, index=labels, columns=labels
-)  # lower the threshold, increase the sensitivity 20% Chance of fail
-
 y.value_counts()
-
 y_train.value_counts()
-
-# Evaluating performance
-print("Accuracy score is:", accuracy_score(y_val, y_pred > 0.2))
-print("Recall score is:", recall_score(y_val, y_pred > 0.2))
-print("Precision score is:", precision_score(y_val, y_pred > 0.2))
-print("F1 score is:", f1_score(y_val, y_pred > 0.2))
-
+'''
 # Cross-validation
 scores = cross_val_score(d_tree, x_train, y_train, cv=10, scoring="recall")
 print("The cross validation scores are", scores)
@@ -201,21 +190,10 @@ scores = cross_val_score(d_tree, x_train, y_train, cv=shuffle_split, scoring="re
 print("The cross validation scores are", scores)
 print("The mean score is", scores.mean())
 
-# Extracting probabilities
-lr_probs = pd.Series(lr_clf.predict_proba(x_val)[:, 1])
-
-
-# calculate scores
-lr_auc = roc_auc_score(y_val, lr_probs)
-
-# summarize scores
-print(f"Logistic: ROC AUC = {lr_auc:.3f}")
-
 # calculate roc curves
-lr_fpr, lr_tpr, _ = roc_curve(y_val, lr_probs)
+lr_fpr, lr_tpr, _ = roc_curve(y_val, pd.Series(lr_clf.predict_proba(x_val)[:, 1]))
 
 # plot the roc curve for the model
-# plt.plot(lr_fpr, lr_tpr, marker='.', label='Logistic')
 plt.plot(lr_fpr, lr_tpr, color="darkorange", lw=3)
 # axis labels
 plt.xlabel("False Positive Rate")
