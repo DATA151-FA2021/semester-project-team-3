@@ -53,7 +53,7 @@ def runModel(model, xt, yt, xv, yv):
     cm = confusion_matrix(yv, y_pred > 0.2, labels=labels)
     print(pd.DataFrame(cm, index=labels, columns=labels))
     for func in [accuracy_score, recall_score, precision_score, f1_score]:
-        print(f"{func} :  {func(yv, y_pred > 0.2, average = 'weighted')}")
+        print(f"{func.__name__} :  {func(yv, y_pred > 0.2, average = 'weighted')}")
 
 
 # First Model: Decision Tree
