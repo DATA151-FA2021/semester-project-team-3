@@ -84,6 +84,7 @@ def runModel(model, xt, yt, xv, yv):
     shuffle_split = StratifiedShuffleSplit(
         test_size=0.2,
         n_splits=10,
+        random_state=123,
     )
     scores = cross_val_score(model, xt, yt, cv=shuffle_split, scoring="recall")
     print("The cross validation scores are", scores)
@@ -92,12 +93,12 @@ def runModel(model, xt, yt, xv, yv):
 
 # First Model: Decision Tree
 
-d_tree = DecisionTreeClassifier(max_depth=3)
+d_tree = DecisionTreeClassifier(max_depth=3, random_state=0)
 runModel(d_tree, x_train, y_train, x_val, y_val)
 
 # Second Model: Random Forest
 
-r_forest = RandomForestClassifier(n_estimators=500)
+r_forest = RandomForestClassifier(n_estimators=500, random_state=7)
 runModel(r_forest, x_train, y_train, x_val, y_val)
 
 # Plotting variable importance for Random Forest
@@ -110,10 +111,10 @@ plt.savefig(f"{r_forest}_feature_importance.png", dpi=150, bbox_inches="tight")
 
 # Third Model: Random Forest with SMOTE undersampling
 
-sm = SMOTE(sampling_strategy="minority")
+sm = SMOTE(sampling_strategy="minority", random_state=2)
 x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
 
-RF = RandomForestClassifier()
+RF = RandomForestClassifier(random_state=2)
 runModel(RF, x_train_res, y_train_res, x_val, y_val)
 
 # Fourth Model: Logistic Regression
@@ -140,7 +141,7 @@ df = df.drop(
 )
 
 # Using train_test_split function to split the dataset
-x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.3, stratify=y)
+x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.3, stratify=y, random_state=1234)
 
 # Chi Square test of Independence
 for col in df.columns[1:]:
