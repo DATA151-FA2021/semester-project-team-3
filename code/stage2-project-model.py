@@ -45,10 +45,24 @@ x_train, x_val, y_train, y_val = train_test_split(
     x, y, test_size=0.2, random_state=123, stratify=y
 )
 
+def runModel(model, xt, yt, xv, yv):
+    model.fit(xt, yt)
+    y_pred = model.predict(xv)
+    print(accuracy_score(yv, y_pred))
+    y_pred = model.predict_proba(xv)[:, 1]
+    labels = np.unique(yv)
+    cm = confusion_matrix(yv, y_pred > 0.2, labels=labels)
+    print(pd.DataFrame(cm, index=labels, columns=labels))
+    for func in [recall_score, precision_score, f1_score]:
+        print(f"{func} :  {func(yv, y_pred > 0.2, average = 'weighted')}")
+
 
 # First Model: Decision Tree
 
 d_tree = DecisionTreeClassifier(random_state=0, max_depth=3)
+runModel(d_tree, x_train, y_train, x_val, y_val)
+
+'''
 d_tree.fit(x_train, y_train)
 y_pred = d_tree.predict(x_val)
 print(accuracy_score(y_val, y_pred))
@@ -61,7 +75,7 @@ print(pd.DataFrame(cm, index=labels, columns=labels))
 
 for func in [recall_score, precision_score, f1_score]:
     print(f"{func} :  {func(y_val, y_pred > 0.2, average = 'weighted')}")
-
+'''
 # Second Model: Random Forest
 
 r_forest = RandomForestClassifier(n_estimators=500, random_state=7)
