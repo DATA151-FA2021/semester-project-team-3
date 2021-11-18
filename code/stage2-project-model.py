@@ -52,7 +52,8 @@ def runModel(model, xt, yt, xv, yv):
     labels = np.unique(yv)
     cm = confusion_matrix(yv, y_pred_prob > 0.2, labels=labels)
     print(pd.DataFrame(cm, index=labels, columns=labels))
-    for func in [accuracy_score, recall_score, precision_score, f1_score]:
+    print(f"{accuracy_score.__name__} : {accuracy_score(yv, y_pred_prob > 0.2)}")
+    for func in [recall_score, precision_score, f1_score]:
         print(f"{func.__name__} :  {func(yv, y_pred_prob > 0.2, average = 'weighted')}")
 
     # print classification report
