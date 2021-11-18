@@ -62,7 +62,7 @@ def runModel(model, xt, yt, xv, yv):
     # calculate scores
     auc = roc_auc_score(yv, probs)
     # summarize scores
-    print(f"Random Forest: ROC AUC = {auc:.3f}")
+    print(f"ROC AUC : {auc:.3f}")
 
 
 # First Model: Decision Tree
