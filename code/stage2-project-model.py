@@ -64,6 +64,13 @@ def runModel(model, xt, yt, xv, yv):
     # summarize scores
     print(f"ROC AUC : {auc:.3f}")
 
+    m_fpr, m_tpr, _ = roc_curve(yv, pd.Series(y_pred_prob))
+    plt.plot(m_fpr, m_tpr, color="darkorange", lw=3)
+    # axis labels
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.savefig(f"{model}.png", dpi=150, bbox_inches="tight")
+
 
 # First Model: Decision Tree
 
@@ -95,22 +102,7 @@ x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
 
 RF = RandomForestClassifier(random_state=2)
 runModel(RF, x_train_res, y_train_res, x_val, y_val)
-rf_fpr, rf_tpr, _ = roc_curve(y_val, pd.Series(RF.predict_proba(x_val)[:, 1]))
-plt.plot(rf_fpr, rf_tpr, color="darkorange", lw=3)
-# axis labels
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.savefig("figure5.png", dpi=150, bbox_inches="tight")
 
-'''
-# plot the roc curve for the model
-# plt.plot(rf_fpr, rf_tpr, marker='.', label='Logistic')
-plt.plot(rf_fpr, rf_tpr, color="darkorange", lw=3)
-# axis labels
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.savefig("figure5.png", dpi=150, bbox_inches="tight")
-'''
 """#Logistic Regression"""
 
 df = df.drop(
@@ -189,12 +181,3 @@ shuffle_split = StratifiedShuffleSplit(test_size=0.2, n_splits=10, random_state=
 scores = cross_val_score(d_tree, x_train, y_train, cv=shuffle_split, scoring="recall")
 print("The cross validation scores are", scores)
 print("The mean score is", scores.mean())
-
-# calculate roc curves
-lr_fpr, lr_tpr, _ = roc_curve(y_val, pd.Series(lr_clf.predict_proba(x_val)[:, 1]))
-
-# plot the roc curve for the model
-plt.plot(lr_fpr, lr_tpr, color="darkorange", lw=3)
-# axis labels
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
