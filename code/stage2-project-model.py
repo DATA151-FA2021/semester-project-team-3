@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import random as rand
 from sklearn.model_selection import (
     train_test_split,
     StratifiedShuffleSplit,
@@ -41,8 +42,10 @@ print(x.head())
 
 y = df["failures"]
 
+rand.seed(10)
+
 x_train, x_val, y_train, y_val = train_test_split(
-    x, y, test_size=0.2, random_state=123, stratify=y
+    x, y, test_size=0.2, stratify=y
 )
 
 def runModel(model, xt, yt, xv, yv):
@@ -78,7 +81,7 @@ def runModel(model, xt, yt, xv, yv):
     print("The mean score is", scores.mean())
 
     # Cross-validation splitter as a cv parameter
-    shuffle_split = StratifiedShuffleSplit(test_size=0.2, n_splits=10, random_state=123)
+    shuffle_split = StratifiedShuffleSplit(test_size=0.2, n_splits=10, )
     scores = cross_val_score(model, xt, yt, cv=shuffle_split, scoring="recall")
     print("The cross validation scores are", scores)
     print("The mean score is", scores.mean())
@@ -86,12 +89,12 @@ def runModel(model, xt, yt, xv, yv):
 
 # First Model: Decision Tree
 
-d_tree = DecisionTreeClassifier(random_state=0, max_depth=3)
+d_tree = DecisionTreeClassifier(max_depth=3)
 runModel(d_tree, x_train, y_train, x_val, y_val)
 
 # Second Model: Random Forest
 
-r_forest = RandomForestClassifier(n_estimators=500, random_state=7)
+r_forest = RandomForestClassifier(n_estimators=500, )
 runModel(r_forest, x_train, y_train, x_val, y_val)
 
 # variable importance
@@ -109,10 +112,10 @@ plt.savefig("figure3.png", dpi=150, bbox_inches="tight")
 
 # Third Model: Random Forest with SMOTE undersampling
 
-sm = SMOTE(sampling_strategy="minority", random_state=2)
+sm = SMOTE(sampling_strategy="minority", )
 x_train_res, y_train_res = sm.fit_resample(x_train, y_train)
 
-RF = RandomForestClassifier(random_state=2)
+RF = RandomForestClassifier()
 runModel(RF, x_train_res, y_train_res, x_val, y_val)
 
 """#Logistic Regression"""
@@ -140,7 +143,7 @@ df = df.drop(
 
 # Using train_test_split function to split the dataset
 x_train, x_val, y_train, y_val = train_test_split(
-    x, y, test_size=0.3, random_state=1234, stratify=y
+    x, y, test_size=0.3, stratify=y
 )
 
 # Chi Square test of Independence
