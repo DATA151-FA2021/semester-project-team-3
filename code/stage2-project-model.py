@@ -51,6 +51,7 @@ def runModel(model, xt, yt, xv, yv):
     model.fit(xt, yt)
     y_pred = model.predict(xv)
     y_pred_prob = model.predict_proba(xv)[:, 1]
+    print(y_pred_prob[0:10])  # first coloumn is prob of negative class (fail)
     labels = np.unique(yv)
     cm = confusion_matrix(yv, y_pred_prob > 0.2, labels=labels)
     print(pd.DataFrame(cm, index=labels, columns=labels))
@@ -67,17 +68,9 @@ def runModel(model, xt, yt, xv, yv):
     # summarize scores
     print(f"ROC AUC : {auc:.3f}")
 
-    # Plotting variable importance
-    plt.figure(figsize=(5, 10))
-    sorted_idx = model.feature_importances_.argsort()
-    plt.barh(x.columns[0:][sorted_idx], model.feature_importances_[sorted_idx])
-    plt.xlabel(f"{model} Feature Importance")
-    plt.title(f"{model} Feature Imortance by Group 3")
-    plt.savefig(f"{model}_feature_importance.png", dpi=150, bbox_inches="tight")
-
+    plt.figure()
     m_fpr, m_tpr, _ = roc_curve(yv, pd.Series(y_pred_prob))
     plt.plot(m_fpr, m_tpr, color="darkorange", lw=3)
-    # axis labels
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
     plt.savefig(f"{model}.png", dpi=150, bbox_inches="tight")
@@ -106,6 +99,14 @@ runModel(d_tree, x_train, y_train, x_val, y_val)
 
 r_forest = RandomForestClassifier(n_estimators=500)
 runModel(r_forest, x_train, y_train, x_val, y_val)
+
+# Plotting variable importance for Random Forest
+plt.figure(figsize=(5, 10))
+sorted_idx = r_forest.feature_importances_.argsort()
+plt.barh(x.columns[0:][sorted_idx], r_forest.feature_importances_[sorted_idx])
+plt.xlabel(f"{r_forest} Feature Importance")
+plt.title(f"{r_forest} Feature Imortance by Group 3")
+plt.savefig(f"{r_forest}_feature_importance.png", dpi=150, bbox_inches="tight")
 
 # Third Model: Random Forest with SMOTE undersampling
 
@@ -166,10 +167,6 @@ lr_clf = LogisticRegression()
 runModel(lr_clf, x_train, y_train, x_val, y_val)
 
 """
-# Prediction using the logistic regression
-y_pred = lr_clf.predict_proba(x_val)[:, 1]
-y_pred[0:10]  # first coloumn is prob of negative class (fail)
-
 y.value_counts()
 y_train.value_counts()
 """
