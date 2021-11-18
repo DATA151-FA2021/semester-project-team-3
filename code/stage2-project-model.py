@@ -55,16 +55,15 @@ def runModel(model, xt, yt, xv, yv):
     labels = np.unique(yv)
     cm = confusion_matrix(yv, y_pred_prob > 0.2, labels=labels)
     print(pd.DataFrame(cm, index=labels, columns=labels))
+
     print(f"{accuracy_score.__name__} : {accuracy_score(yv, y_pred_prob > 0.2)}")
     for func in [recall_score, precision_score, f1_score]:
         print(f"{func.__name__} :  {func(yv, y_pred_prob > 0.2, average = 'weighted')}")
 
     # print classification report
     print(metrics.classification_report(yv, y_pred))
-    # Extracting probabilities
-    probs = pd.Series(model.predict_proba(xv)[:, 1])
-    # calculate scores
-    auc = roc_auc_score(yv, probs)
+    # calculate scores & Extracting probabilities
+    auc = roc_auc_score(yv, pd.Series(model.predict_proba(xv)[:, 1]))
     # summarize scores
     print(f"ROC AUC : {auc:.3f}")
 
@@ -77,8 +76,7 @@ def runModel(model, xt, yt, xv, yv):
 
     # Cross-validation
     scores = cross_val_score(model, xt, yt, cv=10, scoring="recall")
-    print("The cross validation scores are", scores)
-    print("The mean score is", scores.mean())
+    print(f"cross validation : {scores}\nmean : {scores.mean()}")
 
     # Cross-validation splitter as a cv parameter
     shuffle_split = StratifiedShuffleSplit(
@@ -87,9 +85,7 @@ def runModel(model, xt, yt, xv, yv):
         random_state=123,
     )
     scores = cross_val_score(model, xt, yt, cv=shuffle_split, scoring="recall")
-    print("The cross validation scores are", scores)
-    print("The mean score is", scores.mean())
-
+    print(f"cross validation : {scores}\nmean : {scores.mean()}")
 
 # First Model: Decision Tree
 
@@ -156,18 +152,8 @@ print(df["failures"].value_counts())
 
 predictors = df.columns[[7, 8, 15]]  # Choose Predictors from the dataset
 
-target = "failures"
-
-y = df[target]
-y[0:5]
-
 x = pd.get_dummies(df[predictors], drop_first=True)
 x.head()
 
 lr_clf = LogisticRegression()
 runModel(lr_clf, x_train, y_train, x_val, y_val)
-
-"""
-y.value_counts()
-y_train.value_counts()
-"""
